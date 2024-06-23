@@ -90,18 +90,24 @@ class PDAGUI:
         self.entry = ttk.Entry(self.frame, width=30)
         self.entry.pack(pady=10)
 
-        self.validate_button = tk.Button(self.frame, text="Kontrol Et", font=("Arial", 12), bg='#1ABC9C', fg='white',
-                                         activebackground='#16A085', command=self.validate_expression)
+        self.validate_button = tk.Button(self.frame, text="Kontrol Et", font=("Arial", 12), bg='#3498DB', fg='white',
+                                         activebackground='#2980B9', command=self.validate_expression)
         self.validate_button.pack(pady=10)
 
         self.result_label = ttk.Label(self.frame, text="", font=("Arial", 14), background='#2C3E50', foreground='white')
         self.result_label.pack(pady=10)
         
-        self.examples_label = tk.Label(root, text="Geçerli Örnekler Şu Şekildedir:\n5-1*(5+3)\n(6+9)*3\n(7-2*(3-4))/(1+2)")
-        self.examples_label.pack(pady=10)
+        self.examples_label = tk.Label(root, text="Geçerli Bazı Örnek İfadeler Şu Şekildedir:\n(6+9)*3\n5-1*(5+3)\n(7-2*(3-4))/(1+2)",
+                                       bg='#2C3E50', fg='white', font=('Arial', 12))
+        self.examples_label.pack(pady=50)
 
     def validate_expression(self):
         expression = self.entry.get().strip()
+        allowed_chars = re.compile(r'^[0-9+\-*/() ]+$')
+        if not allowed_chars.match(expression):
+            self.result_label.config(text="Hata: İfade içinde geçersiz karakter(ler) var.", foreground='#E74C3C')
+            return
+
         if self.pda.is_balanced_expression(expression):
             result = self.pda.evaluate_expression(expression)
             self.result_label.config(text=f"Girdiğiniz ifade geçerlidir. Sonuç: {result}", foreground='#1ABC9C')
